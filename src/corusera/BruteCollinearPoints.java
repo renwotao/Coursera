@@ -1,7 +1,6 @@
 package corusera;
 
 import java.util.Arrays;
-
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
@@ -10,42 +9,44 @@ public class BruteCollinearPoints {
 	private LineSegment[] ls = new LineSegment[0];
 	
 	public BruteCollinearPoints(Point[] points) {
-		if (points == null || points.length < 4) 
+		if (points == null) 
 			throw new NullPointerException();
 		
-		Arrays.sort(points);
+		Point[] pts = Arrays.copyOf(points, points.length);
+		Arrays.sort(pts);
 		Point prePoint = null;
-		for (int i = 0; i < points.length; i++) {
-			if (points[i] == null) 
+		for (int i = 0; i < pts.length; i++) {
+			if (pts[i] == null) 
 				throw new NullPointerException();
-			if (prePoint != null && prePoint.compareTo(points[i]) == 0) 
+			if (prePoint != null && prePoint.compareTo(pts[i]) == 0) 
 				throw new IllegalArgumentException();
-			prePoint = points[i];
+			prePoint = pts[i];
 		}
 		
-		for (int i = 0; i < points.length; i++) {
-			for (int j = i+1; j < points.length; j++) {
-				double s1 = points[i].slopeTo(points[j]);
+		for (int i = 0; i < pts.length; i++) {
+			for (int j = i+1; j < pts.length; j++) {
+				double s1 = pts[i].slopeTo(pts[j]);
 				
-				for (int k = j+1; k < points.length; k++) {
+				for (int k = j+1; k < pts.length; k++) {
 					
-					double s2 = points[i].slopeTo(points[k]);
+					double s2 = pts[i].slopeTo(pts[k]);
 				
-					for (int l = k+1; l < points.length; l++) {
+					for (int l = k+1; l < pts.length; l++) {
 				
-						double s3 = points[i].slopeTo(points[l]);
+						double s3 = pts[i].slopeTo(pts[l]);
 		
 						if (Math.abs(s1-s2) < Math.pow(10, -5) && Math.abs(s2 - s3) < Math.pow(10, -5)
 								|| s1 == Double.POSITIVE_INFINITY && s2 == Double.POSITIVE_INFINITY && s3 == Double.POSITIVE_INFINITY) {
 							
 							if (ls.length == 0) {
 								ls = new LineSegment[1];
-								ls[0] = new LineSegment(points[i], points[l]);
+								ls[0] = new LineSegment(pts[i], pts[l]);
 							} else {
 								LineSegment[] lsTmp = new LineSegment[ls.length+1];
 								System.arraycopy(ls, 0, lsTmp, 0, ls.length);
-								lsTmp[ls.length] = new LineSegment(points[i], points[l]);
+								lsTmp[ls.length] = new LineSegment(pts[i], pts[l]);
 								ls = lsTmp;
+								lsTmp = null;
 							}
 						
 						}
@@ -60,7 +61,7 @@ public class BruteCollinearPoints {
 		return ls.length;
 	}
 	public LineSegment[] segments() {
-		return ls;
+		return Arrays.copyOf(ls, ls.length);
 	}
 
 	public static void main(String[] args) {

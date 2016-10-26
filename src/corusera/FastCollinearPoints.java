@@ -1,7 +1,6 @@
 package corusera;
 
 import java.util.Arrays;
-
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
@@ -11,26 +10,27 @@ public class FastCollinearPoints {
 	
 	public FastCollinearPoints(Point[] points) {
 		if (points == null) throw new NullPointerException();
-		
-		Arrays.sort(points);
+		Point[] pts = Arrays.copyOf(points, points.length);
+		Arrays.sort(pts);
 		Point prePoint = null;
-		for (int i = 0; i < points.length; i++) {
-			if (points[i] == null) throw new NullPointerException();
+		for (int i = 0; i < pts.length; i++) {
+			if (pts[i] == null) throw new NullPointerException();
 			
-			if (prePoint != null && prePoint.compareTo(points[i]) == 0) throw new IllegalArgumentException(); 
-			prePoint = points[i];
+			if (prePoint != null && prePoint.compareTo(pts[i]) == 0) 
+				throw new IllegalArgumentException(); 
+			prePoint = pts[i];
 		}
 		
-		for (int i = 0; i < points.length; i++) {
-			Point[] ptCopy =  new Point[points.length];
-			System.arraycopy(points, 0, ptCopy, 0, points.length);
+		for (int i = 0; i < pts.length; i++) {
+			Point[] ptCopy =  new Point[pts.length];
+			System.arraycopy(pts, 0, ptCopy, 0, pts.length);
 			Arrays.sort(ptCopy, ptCopy[i].slopeOrder());
 			
 			double pre = Double.NEGATIVE_INFINITY;
 			boolean flag = false;
 			int count = 1;
 			
-			for (int j = 1; j < points.length; j++) {
+			for (int j = 1; j < pts.length; j++) {
 				double k = ptCopy[0].slopeTo(ptCopy[j]);
 				
 				if (Math.abs(pre - k) < Math.pow(10, -5)
@@ -50,7 +50,8 @@ public class FastCollinearPoints {
 							lsTmp[ls.length] = new LineSegment(ptCopy[0], ptCopy[j-1]);
 						}
 					
-						ls = lsTmp;
+						ls = lsTmp; 
+						lsTmp = null;
 					}
 					count = 1;
 				}
@@ -63,7 +64,7 @@ public class FastCollinearPoints {
 		return ls.length;
 	}
 	public LineSegment[] segments() {
-		return ls;
+		return Arrays.copyOf(ls, ls.length);
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
